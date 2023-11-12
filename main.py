@@ -1,53 +1,16 @@
-from transformers import BertTokenizer, BertModel
-import torch
-import pickle
-import csv
+# 这是一个示例 Python 脚本。
 
-import pickle
+# 按 Shift+F10 执行或将其替换为您的代码。
+# 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
 
 
-def read_pickle_and_print(path):
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
-        print(data)
+def print_hi(name):
+    # 在下面的代码行中使用断点来调试脚本。
+    print(f'Hi, {name}')  # 按 Ctrl+F8 切换断点。
 
-# 加载预训练的BERT模型和分词器
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertModel.from_pretrained('bert-base-uncased')
 
-# 读取实体描述文件
-data = []
-with open('entity_description.txt', 'r', encoding='utf-8') as f:
-    reader = csv.reader(f, delimiter='\t')
-    for row in reader:
-        data.append(row[1])
+# 按装订区域中的绿色按钮以运行脚本。
+if __name__ == '__main__':
+    print_hi('PyCharm')
 
-# 逐批次进行分词和编码
-batch_size = 16  # 根据内存情况调整批次大小
-text_features_list = []
-
-for i in range(0, len(data), batch_size):
-    print(i);
-
-    batch_data = data[i:i + batch_size]
-
-    # 对文本进行分词和编码
-    encoded_data = tokenizer(batch_data, padding=True, truncation=True, return_tensors='pt')
-
-    # 使用BERT模型获取文本特征
-    with torch.no_grad():
-        outputs = model(**encoded_data)
-
-    # 提取最后一层隐藏状态作为文本特征
-    text_features = outputs.last_hidden_state
-    text_features_list.append(text_features)
-
-    # 清理GPU缓存
-    torch.cuda.empty_cache()
-
-# 合并所有批次的文本特征
-text_features = torch.cat(text_features_list, dim=0)
-
-# 将文本特征保存为pickle文件
-with open('text_features.pkl', 'wb') as f:
-    pickle.dump(text_features, f)
+# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
